@@ -4,13 +4,23 @@ namespace App\Controllers;
 
 use App\Models\Podcast;
 
-class PodcastController
+use League\Fractal\{
+  Resource\Item,
+  Resource\Collection,
+  Pagination\IlluminatePaginatorAdapter
+};
+
+use App\Transformers\PodcastTransformer;
+
+class PodcastController extends Controller
 {
   public function index($request, $response)
   {
-    $podcasts = Podcast::latest()->get();
+    $podcasts = Podcast::latest()->paginate(2);
 
-    return $response->withJson($podcasts);
+    $transformer = (new Collection($podcasts->getCollection(), new PodcastTransformer))->setPaginator(new IlluminatePaginatorAdapter($podcasts));
+
+    return $response->withJson( $this->container->fractal->createData($transformer)->toArray() );
   }
 
   public function show($request, $response, $args)
@@ -26,7 +36,9 @@ class PodcastController
       ]);
     }
 
-    return $response->withJson($podcast);
+    $transformer = new Item($podcast, new PodcastTransformer);
+
+    return $response->withJson( $this->container->fractal->createData($transformer)->toArray() );
 
   }
 }

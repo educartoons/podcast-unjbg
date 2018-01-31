@@ -2,7 +2,9 @@
     "require": {
         "slim/slim": "^3.9",
         "illuminate/database": "^5.5",
-        "vlucas/phpdotenv": "^2.4"
+        "vlucas/phpdotenv": "^2.4",
+        "league/fractal": "^0.17.0",
+        "illuminate/pagination": "^5.5"
     },
     "autoload": {
       "psr-4": {
